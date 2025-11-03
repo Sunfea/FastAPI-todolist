@@ -6,7 +6,26 @@ services:
     ports:
       - "8000:8000"
     environment:
-      - SECRET_KEY=your-production-secret-key-here
+      - SECRET_KEY=${SECRET_KEY}
+      - DATABASE_URL=${DATABASE_URL}
     volumes:
-      - ./todos.db:/app/todos.db
+      - todo-data:/app/data
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    labels:
+      - "com.todo.app.name=todo-api"
+      - "com.todo.app.version=1.0.0"
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+        reservations:
+          memory: 256M
+
+volumes:
+  todo-data:

@@ -8,11 +8,12 @@ from passlib.context import CryptContext
 from sqlalchemy.orm import Session
 from .models import User, SessionLocal
 from pydantic import BaseModel
+import bcrypt
 
 # Secret key for JWT - in production, use a more secure method to store this
 SECRET_KEY = os.environ.get("SECRET_KEY", "your-secret-key-change-this-in-production")
 ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 30
+ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES", 30))
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
@@ -45,11 +46,41 @@ def get_db():
     finally:
         db.close()
 
-def verify_password(plain_password, hashed_password):
-    return pwd_context.verify(plain_password, hashed_password)
-
 def get_password_hash(password):
-    return pwd_context.hash(password)
+    # Truncate password to 72 bytes to avoid bcrypt limitation
+    if isinstance(password, str):
+        # Encode to bytes first to check length
+        password_bytes = password.encode('utf-8')
+        # Truncate if longer than 72 bytes
+        if len(password_bytes) > 72:
+            password_bytes = password_bytes[:72]
+        # Use bcrypt directly to avoid passlib verification issues
+        hashed = bcrypt.hashpw(password_bytes, bcrypt.gensalt())
+        # Return as string for storage
+        return hashed.decode('utf-8') if isinstance(hashed, bytes) else hashed
+    else:
+        # Handle bytes input
+        if len(password) > 72:
+            password = password[:72]
+        hashed = bcrypt.hashpw(password, bcrypt.gensalt())
+        return hashed.decode('utf-8') if isinstance(hashed, bytes) else hashed
+
+def verify_password(plain_password, hashed_password):
+    # Convert hashed_password back to bytes if it's a string
+    if isinstance(hashed_password, str):
+        hashed_password = hashed_password.encode('utf-8')
+    
+    # Truncate plain_password to 72 bytes to match hashing
+    if isinstance(plain_password, str):
+        plain_password_bytes = plain_password.encode('utf-8')
+        if len(plain_password_bytes) > 72:
+            plain_password_bytes = plain_password_bytes[:72]
+        plain_password = plain_password_bytes
+    elif len(plain_password) > 72:
+        plain_password = plain_password[:72]
+    
+    # Use bcrypt directly to avoid passlib verification issues
+    return bcrypt.checkpw(plain_password, hashed_password)
 
 def get_user(db: Session, username: str):
     return db.query(User).filter(User.username == username).first()

@@ -102,6 +102,30 @@ docker run -p 8000:8000 todo-api
 
 The application will be available at `http://localhost:8000`
 
+### Docker Compose Deployment (Recommended for Production)
+
+1. Copy `.env.example` to `.env` and update the values:
+   ```
+   cp .env.example .env
+   ```
+
+2. Edit the `.env` file to set your secret key:
+   ```
+   SECRET_KEY=your-super-secret-key-here
+   ```
+
+3. Start the application using docker-compose:
+   ```
+   docker-compose up -d
+   ```
+
+4. The application will be available at `http://localhost:8000`
+
+5. To stop the application:
+   ```
+   docker-compose down
+   ```
+
 ### Traditional Deployment
 
 1. Clone the repository

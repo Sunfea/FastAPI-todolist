@@ -1,35 +1,68 @@
-.git
-__pycache__
-*.pyc
-*.pyo
-*.pyd
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Distribution / packaging
 .Python
-.pytest_cache
-.coverage
-.gitignore
-README.md
-*.log
-.DS_Store
-.env
-.venv
-venv
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual environments
+venv/
 env/
-.pytest_cache/
-.coverage
-htmlcov/
-.tox/
-.nox/
-.build/
-dist/
-*.egg-info/
-.pytest_cache/
-.coverage
-htmlcov/
-.tox/
-.nox/
-.build/
-dist/
-*.egg-info/
-*.sqlite3
+ENV/
+
+# IDE files
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Log files
+*.log
+
+# Environment files
+.env
+.env.local
+.env.production.local
+
+# Test files
+tests/
+test_*.py
+*_test.py
+
+# Documentation
+docs/
+*.md
+
+# Database files (except in data directory)
 *.db
-todos.db
+*.sqlite
+!data/
+
+# Temporary files
+tmp/
+temp/
