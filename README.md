@@ -1,5 +1,7 @@
 # Modern Todo API with FastAPI and SQLite
 
+## LIVE - https://fastapi-todolist-production.up.railway.app/
+
 A modern RESTful API for managing todo items built with FastAPI and SQLite database with full authentication system.
 
 ## Features
